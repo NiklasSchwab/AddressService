@@ -19,8 +19,8 @@ type addressServiceServer struct {
 func newServer() *addressServiceServer {
 	s := &addressServiceServer{}
 
-	placeholder01 := newAddress("Mustermann", "Max", "Musterweg", 42, 12345, "Musterhausen")
-	placeholder02 := newAddress("Doe", "John", "Sunsetstreet", 1, 54321, "Sunnyvale")
+	placeholder01 := newAddress("Mustermann", "Max", "Musterweg", 1, 12345, "Musterhausen")
+	placeholder02 := newAddress("Doe", "John", "Mulholland Drive", 42, 91364, "Los Angeles")
 
 	s.savedAddresses = append(s.savedAddresses, placeholder01)
 	s.savedAddresses = append(s.savedAddresses, placeholder02)
@@ -29,6 +29,7 @@ func newServer() *addressServiceServer {
 }
 
 func (server *addressServiceServer) LookupAddress(ctx context.Context, person *addressService.Person) (*addressService.Address, error) {
+	fmt.Println("Incoming request: LookupAddress")
 	for _, address := range server.savedAddresses {
 		if proto.Equal(address.Resident, person) {
 			return address, nil
