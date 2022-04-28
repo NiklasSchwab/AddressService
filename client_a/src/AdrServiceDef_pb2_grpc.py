@@ -20,6 +20,11 @@ class AddressServiceStub(object):
                 request_serializer=AdrServiceDef__pb2.Person.SerializeToString,
                 response_deserializer=AdrServiceDef__pb2.Address.FromString,
                 )
+        self.GetAllAddresses = channel.unary_stream(
+                '/AddressService/GetAllAddresses',
+                request_serializer=AdrServiceDef__pb2.Empty.SerializeToString,
+                response_deserializer=AdrServiceDef__pb2.Address.FromString,
+                )
 
 
 class AddressServiceServicer(object):
@@ -32,12 +37,23 @@ class AddressServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetAllAddresses(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AddressServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'LookupAddress': grpc.unary_unary_rpc_method_handler(
                     servicer.LookupAddress,
                     request_deserializer=AdrServiceDef__pb2.Person.FromString,
+                    response_serializer=AdrServiceDef__pb2.Address.SerializeToString,
+            ),
+            'GetAllAddresses': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetAllAddresses,
+                    request_deserializer=AdrServiceDef__pb2.Empty.FromString,
                     response_serializer=AdrServiceDef__pb2.Address.SerializeToString,
             ),
     }
@@ -64,6 +80,23 @@ class AddressService(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/AddressService/LookupAddress',
             AdrServiceDef__pb2.Person.SerializeToString,
+            AdrServiceDef__pb2.Address.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetAllAddresses(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/AddressService/GetAllAddresses',
+            AdrServiceDef__pb2.Empty.SerializeToString,
             AdrServiceDef__pb2.Address.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

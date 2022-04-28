@@ -14,12 +14,13 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13\x41\x64rServiceDef.proto\"/\n\x06Person\x12\x12\n\nfamilyName\x18\x01 \x01(\t\x12\x11\n\tgivenName\x18\x02 \x01(\t\"b\n\x07\x41\x64\x64ress\x12\x19\n\x08resident\x18\x01 \x01(\x0b\x32\x07.Person\x12\x0e\n\x06street\x18\x02 \x01(\t\x12\r\n\x05house\x18\x03 \x01(\x05\x12\x0f\n\x07zipCode\x18\x04 \x01(\x05\x12\x0c\n\x04\x63ity\x18\x05 \x01(\t26\n\x0e\x41\x64\x64ressService\x12$\n\rLookupAddress\x12\x07.Person\x1a\x08.Address\"\x00\x42\x17Z\x15protos/addressServiceb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13\x41\x64rServiceDef.proto\"/\n\x06Person\x12\x12\n\nfamilyName\x18\x01 \x01(\t\x12\x11\n\tgivenName\x18\x02 \x01(\t\"b\n\x07\x41\x64\x64ress\x12\x19\n\x08resident\x18\x01 \x01(\x0b\x32\x07.Person\x12\x0e\n\x06street\x18\x02 \x01(\t\x12\r\n\x05house\x18\x03 \x01(\x05\x12\x0f\n\x07zipCode\x18\x04 \x01(\x05\x12\x0c\n\x04\x63ity\x18\x05 \x01(\t\"\x07\n\x05\x45mpty2_\n\x0e\x41\x64\x64ressService\x12$\n\rLookupAddress\x12\x07.Person\x1a\x08.Address\"\x00\x12\'\n\x0fGetAllAddresses\x12\x06.Empty\x1a\x08.Address\"\x00\x30\x01\x42\x17Z\x15protos/addressServiceb\x06proto3')
 
 
 
 _PERSON = DESCRIPTOR.message_types_by_name['Person']
 _ADDRESS = DESCRIPTOR.message_types_by_name['Address']
+_EMPTY = DESCRIPTOR.message_types_by_name['Empty']
 Person = _reflection.GeneratedProtocolMessageType('Person', (_message.Message,), {
   'DESCRIPTOR' : _PERSON,
   '__module__' : 'AdrServiceDef_pb2'
@@ -34,6 +35,13 @@ Address = _reflection.GeneratedProtocolMessageType('Address', (_message.Message,
   })
 _sym_db.RegisterMessage(Address)
 
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
+  'DESCRIPTOR' : _EMPTY,
+  '__module__' : 'AdrServiceDef_pb2'
+  # @@protoc_insertion_point(class_scope:Empty)
+  })
+_sym_db.RegisterMessage(Empty)
+
 _ADDRESSSERVICE = DESCRIPTOR.services_by_name['AddressService']
 if _descriptor._USE_C_DESCRIPTORS == False:
 
@@ -43,6 +51,8 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _PERSON._serialized_end=70
   _ADDRESS._serialized_start=72
   _ADDRESS._serialized_end=170
-  _ADDRESSSERVICE._serialized_start=172
-  _ADDRESSSERVICE._serialized_end=226
+  _EMPTY._serialized_start=172
+  _EMPTY._serialized_end=179
+  _ADDRESSSERVICE._serialized_start=181
+  _ADDRESSSERVICE._serialized_end=276
 # @@protoc_insertion_point(module_scope)

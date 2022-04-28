@@ -38,6 +38,17 @@ func (server *addressServiceServer) LookupAddress(ctx context.Context, person *a
 	return nil, errors.New("Person not found")
 }
 
+func (server *addressServiceServer) GetAllAddresses(_ *addressService.Empty, stream addressService.AddressService_GetAllAddressesServer) error {
+	fmt.Println("Incoming request: GetAllAdresses")
+	for _, address := range server.savedAddresses {
+		err := stream.Send(address)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func check(e error) {
 	if e != nil {
 		panic(e)

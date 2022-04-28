@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AddressServiceClient interface {
 	LookupAddress(ctx context.Context, in *Person, opts ...grpc.CallOption) (*Address, error)
+	GetAllAddresses(ctx context.Context, in *Empty, opts ...grpc.CallOption) (AddressService_GetAllAddressesClient, error)
 }
 
 type addressServiceClient struct {
@@ -42,11 +43,44 @@ func (c *addressServiceClient) LookupAddress(ctx context.Context, in *Person, op
 	return out, nil
 }
 
+func (c *addressServiceClient) GetAllAddresses(ctx context.Context, in *Empty, opts ...grpc.CallOption) (AddressService_GetAllAddressesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &AddressService_ServiceDesc.Streams[0], "/AddressService/GetAllAddresses", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &addressServiceGetAllAddressesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type AddressService_GetAllAddressesClient interface {
+	Recv() (*Address, error)
+	grpc.ClientStream
+}
+
+type addressServiceGetAllAddressesClient struct {
+	grpc.ClientStream
+}
+
+func (x *addressServiceGetAllAddressesClient) Recv() (*Address, error) {
+	m := new(Address)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AddressServiceServer is the server API for AddressService service.
 // All implementations must embed UnimplementedAddressServiceServer
 // for forward compatibility
 type AddressServiceServer interface {
 	LookupAddress(context.Context, *Person) (*Address, error)
+	GetAllAddresses(*Empty, AddressService_GetAllAddressesServer) error
 	mustEmbedUnimplementedAddressServiceServer()
 }
 
@@ -56,6 +90,9 @@ type UnimplementedAddressServiceServer struct {
 
 func (UnimplementedAddressServiceServer) LookupAddress(context.Context, *Person) (*Address, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LookupAddress not implemented")
+}
+func (UnimplementedAddressServiceServer) GetAllAddresses(*Empty, AddressService_GetAllAddressesServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllAddresses not implemented")
 }
 func (UnimplementedAddressServiceServer) mustEmbedUnimplementedAddressServiceServer() {}
 
@@ -88,6 +125,27 @@ func _AddressService_LookupAddress_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AddressService_GetAllAddresses_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AddressServiceServer).GetAllAddresses(m, &addressServiceGetAllAddressesServer{stream})
+}
+
+type AddressService_GetAllAddressesServer interface {
+	Send(*Address) error
+	grpc.ServerStream
+}
+
+type addressServiceGetAllAddressesServer struct {
+	grpc.ServerStream
+}
+
+func (x *addressServiceGetAllAddressesServer) Send(m *Address) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // AddressService_ServiceDesc is the grpc.ServiceDesc for AddressService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +158,12 @@ var AddressService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AddressService_LookupAddress_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllAddresses",
+			Handler:       _AddressService_GetAllAddresses_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "AdrServiceDef.proto",
 }

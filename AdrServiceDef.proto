@@ -7,6 +7,7 @@ option go_package = "protos/addressService";
 //Definition of the service
 service AddressService {
     rpc LookupAddress(Person) returns (Address) {}
+    rpc GetAllAddresses(Empty) returns (stream Address) {}
 }
 
 //Data structures of the service
@@ -22,3 +23,5 @@ message Address {
     int32 zipCode = 4;
     string city = 5;
 }
+
+message Empty {}
