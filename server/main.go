@@ -25,13 +25,7 @@ type addressServiceServer struct {
 
 func newServer() *addressServiceServer {
 	s := &addressServiceServer{}
-
-	placeholder01 := newAddress("Mustermann", "Max", "Musterweg", 1, 12345, "Musterhausen")
-	placeholder02 := newAddress("Doe", "John", "Mulholland Drive", 42, 91364, "Los Angeles")
-
-	s.savedAddresses = append(s.savedAddresses, placeholder01)
-	s.savedAddresses = append(s.savedAddresses, placeholder02)
-
+	mockPopulateAddressBook(&s.savedAddresses)
 	return s
 }
 
@@ -58,12 +52,6 @@ func (server *addressServiceServer) GetAllAddresses(_ *addressService.Empty, str
 	return nil
 }
 
-func check(e error) {
-	if e != nil {
-		errorLog.Panicln(e)
-	}
-}
-
 func init() {
 	infoLog = log.New(os.Stdout, "INFO: ", log.Ldate|log.Lmicroseconds)
 	debugLog = log.New(os.Stdout, "DEBUG: ", log.Ldate|log.Lmicroseconds)
@@ -80,22 +68,4 @@ func main() {
 
 	addressService.RegisterAddressServiceServer(grpcServer, newServer())
 	grpcServer.Serve(lis)
-}
-
-func newAddress(familyName string, givenName string, street string, house int32, zip int32, city string) *addressService.Address {
-
-	resident := &addressService.Person{
-		FamilyName: familyName,
-		GivenName:  givenName,
-	}
-
-	ret := &addressService.Address{
-		Resident: resident,
-		Street:   street,
-		House:    house,
-		ZipCode:  zip,
-		City:     city,
-	}
-
-	return ret
 }
