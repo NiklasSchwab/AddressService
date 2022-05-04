@@ -4,11 +4,18 @@ import (
 	"adrService/addressService"
 	"context"
 	"errors"
-	"fmt"
+	"log"
 	"net"
+	"os"
 
 	"github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+)
+
+var (
+	infoLog  *log.Logger
+	debugLog *log.Logger
+	errorLog *log.Logger
 )
 
 type addressServiceServer struct {
@@ -29,7 +36,7 @@ func newServer() *addressServiceServer {
 }
 
 func (server *addressServiceServer) LookupAddress(ctx context.Context, person *addressService.Person) (*addressService.Address, error) {
-	fmt.Println("Incoming request: LookupAddress")
+	debugLog.Println("RPC: LookupAddress")
 	for _, address := range server.savedAddresses {
 		if proto.Equal(address.Resident, person) {
 			return address, nil
@@ -39,9 +46,11 @@ func (server *addressServiceServer) LookupAddress(ctx context.Context, person *a
 }
 
 func (server *addressServiceServer) GetAllAddresses(_ *addressService.Empty, stream addressService.AddressService_GetAllAddressesServer) error {
-	fmt.Println("Incoming request: GetAllAdresses")
+	debugLog.Println("RPC: GetAllAddresses")
 	for _, address := range server.savedAddresses {
+		debugLog.Println("Stream: Pushing element...")
 		err := stream.Send(address)
+		debugLog.Println("Stream: ...pushed!")
 		if err != nil {
 			return err
 		}
@@ -51,12 +60,18 @@ func (server *addressServiceServer) GetAllAddresses(_ *addressService.Empty, str
 
 func check(e error) {
 	if e != nil {
-		panic(e)
+		errorLog.Panicln(e)
 	}
 }
 
+func init() {
+	infoLog = log.New(os.Stdout, "INFO: ", log.Ldate|log.Lmicroseconds)
+	debugLog = log.New(os.Stdout, "DEBUG: ", log.Ldate|log.Lmicroseconds)
+	errorLog = log.New(os.Stdout, "ERROR: ", log.Ldate|log.Lmicroseconds)
+}
+
 func main() {
-	fmt.Println("Starting server...")
+	infoLog.Println("Starting server...")
 
 	lis, err := net.Listen("tcp", "localhost:50000")
 	check(err)
