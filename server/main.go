@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
@@ -21,12 +22,6 @@ var (
 type addressServiceServer struct {
 	addressService.UnimplementedAddressServiceServer
 	savedAddresses []*addressService.Address
-}
-
-func newServer() *addressServiceServer {
-	s := &addressServiceServer{}
-	mockPopulateAddressBook(&s.savedAddresses)
-	return s
 }
 
 func (server *addressServiceServer) LookupAddress(ctx context.Context, person *addressService.Person) (*addressService.Address, error) {
@@ -45,11 +40,18 @@ func (server *addressServiceServer) GetAllAddresses(_ *addressService.Empty, str
 		debugLog.Println("Stream: Pushing element...")
 		err := stream.Send(address)
 		debugLog.Println("Stream: ...pushed!")
+		time.Sleep(2 * time.Second)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func newServer() *addressServiceServer {
+	s := &addressServiceServer{}
+	mockPopulateAddressBook(&s.savedAddresses)
+	return s
 }
 
 func init() {
@@ -65,7 +67,7 @@ func main() {
 	check(err)
 
 	grpcServer := grpc.NewServer()
-
 	addressService.RegisterAddressServiceServer(grpcServer, newServer())
+
 	grpcServer.Serve(lis)
 }
