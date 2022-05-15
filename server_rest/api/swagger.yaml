@@ -1,0 +1,65 @@
+openapi: 3.0.0
+info:
+  title: Address Service RESTful API
+  description: This is the RESTful API for the Seminar Demo of a Address Service
+  contact:
+    email: scni1071@h-ka.de
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /addresses:
+    get:
+      summary: get all addresses
+      responses:
+        "200":
+          description: all addresses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+                x-content-type: application/json
+components:
+  schemas:
+    Address:
+      required:
+      - city
+      - house
+      - resident
+      - street
+      - zipCode
+      type: object
+      properties:
+        resident:
+          $ref: '#/components/schemas/Person'
+        street:
+          type: string
+        house:
+          type: number
+        zipCode:
+          type: number
+        city:
+          type: string
+      example:
+        zipCode: 6.02745618307040320615897144307382404804229736328125
+        city: city
+        street: street
+        house: 0.80082819046101150206595775671303272247314453125
+        resident:
+          familyName: familyName
+          givenName: givenName
+    Person:
+      required:
+      - familyName
+      - givenName
+      type: object
+      properties:
+        familyName:
+          type: string
+        givenName:
+          type: string
+      example:
+        familyName: familyName
+        givenName: givenName

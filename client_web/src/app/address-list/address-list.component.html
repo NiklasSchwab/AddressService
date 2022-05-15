@@ -1,0 +1,10 @@
+<div class="card-container">
+    <mat-card *ngFor="let addr of addresses">
+        <mat-card-title>{{ addr.resident?.familyName }}, {{ addr.resident?.givenName }}</mat-card-title>
+        <mat-card-content>
+            <span>{{ addr.street }} {{ addr.house }}</span>
+            <div></div>
+            <span>{{ addr.zipCode }} {{ addr.city }}</span>
+        </mat-card-content>
+    </mat-card>
+</div>

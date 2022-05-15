@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# grpc server in go
+echo "Generating Go files for gRPC server..."
+protoc \
+--go_out=../server_grpc/addressServiceProto --go_opt=paths=source_relative \
+--go-grpc_out=../server_grpc/addressServiceProto --go-grpc_opt=paths=source_relative \
+--proto_path=./ \
+addrService.proto
+
+# rest server in go
+echo "Generating Go files for RESTful server..."
+protoc \
+--go_out=../server_rest/go/addressServiceProto --go_opt=paths=source_relative \
+--proto_path=./ \
+addrService.proto
+
+# client in go
+echo "Generating Go files for client..."
+protoc \
+--go_out=../client_go/addressServiceProto --go_opt=paths=source_relative \
+--go-grpc_out=../client_go/addressServiceProto --go-grpc_opt=paths=source_relative \
+--proto_path=./ \
+addrService.proto
+
+# client in python
+echo "Generating Python files for client..."
+python -m grpc_tools.protoc \
+-I./ \
+--python_out=../client_python/src \
+--grpc_python_out=../client_python/src \
+addrService.proto
+
+# client for web (with angular)
+echo "Generating files for Angular web-client..."
+(cd ../client_web; npm run proto:generate)
+
+echo "Finished generating protobuf files."
+
+
