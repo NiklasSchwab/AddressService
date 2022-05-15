@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Address, Empty, Person } from "src/proto/adr-service-def.pb";
-import { AddressServiceClient } from 'src/proto/adr-service-def.pbsc';
-import { Any } from '@ngx-grpc/well-known-types';
+import { Address, AddressList, Empty } from "src/proto/addr-service.pb";
+import { AddressServiceClient } from 'src/proto/addr-service.pbsc';
 import { Subscription } from 'rxjs';
 
 interface ResponsePerson {
@@ -45,8 +44,8 @@ export class AddressListService {
     this.addrList.splice(0)
   }
 
-  fetchRPC() {
-    console.log("Fetching Addresses via gRPC...") 
+  fetchRPCStream() {
+    console.log("Fetching Addresses via gRPC stream...") 
     this.clearList()   
     this.sub = this.client.getAllAddresses(new Empty()).subscribe(res => {
       this.addToList(res)
@@ -55,6 +54,18 @@ export class AddressListService {
 
   stopStream() {
     this.sub.unsubscribe();
+  }
+
+  fetchRPCList() {
+    console.log("Fetching Addresses via single gRPC call...") 
+    this.clearList()   
+    this.client.getAddressList(new Empty()).subscribe(res => {
+      if (res.addrList) {
+        res.addrList.forEach((addr: Address) => {
+          this.addToList(new Address(addr))
+        });
+      }
+    });
   }
 
   fetchREST() {

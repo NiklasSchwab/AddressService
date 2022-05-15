@@ -18,9 +18,14 @@ export class TopBarComponent implements OnInit {
     this.addressListService.fetchREST()
   }
 
-  rpc() {
-    console.log("Pressed RPC button.")
-    this.addressListService.fetchRPC()
+  rpcStream() {
+    console.log("Pressed RPC stream button.")
+    this.addressListService.fetchRPCStream()
+  }
+
+  rpcList() {
+    console.log("Pressed RPC list button.")
+    this.addressListService.fetchRPCList()
   }
 
   stopStream() {
