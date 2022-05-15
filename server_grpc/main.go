@@ -52,6 +52,9 @@ func (server *addressServiceServer) GetAllAddresses(_ *pb.Empty, stream pb.Addre
 
 func (server *addressServiceServer) GetAddressList(ctx context.Context, _ *pb.Empty) (*pb.AddressList, error) {
 	debugLog.Println("RPC: GetAddressList")
+	for range server.savedAddresses {
+		time.Sleep(5 * time.Millisecond)
+	}
 	ret := &pb.AddressList{
 		AddrList: server.savedAddresses[:],
 	}
